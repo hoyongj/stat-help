@@ -1,0 +1,302 @@
+---
+title: "index"
+format: html
+---
+
+
+
+### **Task 1 [5 pts]: Probabilities and Quartiles**
+
+#### (a) Normal distribution areas
+
+```{r}
+#| echo: false
+# Plot normal curve
+x <- seq(-5, 7, 0.01)
+y <- dnorm(x, mean = 1, sd = 2)
+plot(x, y, type = "l", lwd = 2, col = "black", main = "Normal Distribution N(1,2)",
+     ylab = "Density", xlab = "X")
+
+# Shade P(X ≤ 2.1)
+polygon(c(x[x <= 2.1], 2.1), c(y[x <= 2.1], 0), col = "skyblue", border = NA)
+
+# Shade P(X > 1.8)
+polygon(c(1.8, x[x > 1.8], max(x)), c(0, y[x > 1.8], 0), col = "salmon", border = NA)
+
+legend("topright", legend = c("P(X ≤ 2.1)", "P(X > 1.8)"),
+       fill = c("skyblue", "salmon"))
+
+```
+
+
+```{r}
+# Normal distribution with mean = 1, sd = 2
+pnorm(2.1, mean = 1, sd = 2)     # P(X ≤ 2.1)
+1 - pnorm(1.8, mean = 1, sd = 2) # P(X > 1.8)
+```
+
+#### (b) Area under t-distribution curve
+
+```{r}
+#| echo: false
+x <- seq(-4, 4, 0.01)
+y <- dt(x, df = 10)
+plot(x, y, type = "l", lwd = 2, col = "black", main = "t-Distribution (df = 10)",
+     ylab = "Density", xlab = "T")
+
+# Shade area under curve for T ≤ 2.3
+polygon(c(x[x <= 2.3], 2.3), c(y[x <= 2.3], 0), col = "lightgreen", border = NA)
+
+abline(v = 2.3, col = "darkgreen", lty = 2)
+
+```
+
+
+```{r}
+# t-distribution with df = 10
+pt(2.3, df = 10)  # P(T ≤ 2.3)
+```
+
+#### (c) Critical values for normal distribution
+
+```{r}
+#| echo: false
+x <- seq(-4, 4, 0.01)
+y <- dnorm(x)
+plot(x, y, type = "l", lwd = 2, col = "black", main = "Normal Critical Values",
+     ylab = "Density", xlab = "Z")
+
+# Shade middle 90%
+z_90 <- qnorm(c(0.05, 0.95))
+polygon(c(x[x >= z_90[1] & x <= z_90[2]], rev(x[x >= z_90[1] & x <= z_90[2]])),
+        c(y[x >= z_90[1] & x <= z_90[2]], rep(0, length(x[x >= z_90[1] & x <= z_90[2]]))),
+        col = "lightblue", border = NA)
+
+# Shade middle 95%
+z_95 <- qnorm(c(0.025, 0.975))
+polygon(c(x[x >= z_95[1] & x <= z_95[2]], rev(x[x >= z_95[1] & x <= z_95[2]])),
+        c(y[x >= z_95[1] & x <= z_95[2]], rep(0, length(x[x >= z_95[1] & x <= z_95[2]]))),
+        col = rgb(1,0,0,0.3), border = NA)
+
+legend("topright", legend = c("90% CI", "95% CI"), fill = c("lightblue", rgb(1,0,0,0.3)))
+
+```
+
+
+```{r}
+# Normal distribution quantiles
+qnorm(0.95)   # 90% CI upper critical value (alpha = 0.10 → 0.05 in upper tail)
+qnorm(0.975)  # 95% CI upper critical value (alpha = 0.05 → 0.025 in upper tail)
+```
+
+#### (d) Critical values for t-distribution (df = 15)
+
+```{r}
+#| echo: false
+x <- seq(-4, 4, 0.01)
+y <- dt(x, df = 15)
+plot(x, y, type = "l", lwd = 2, col = "black", main = "t Critical Values (df = 15)",
+     ylab = "Density", xlab = "t")
+
+# Shade 90% CI
+t_90 <- qt(c(0.05, 0.95), df = 15)
+polygon(c(x[x >= t_90[1] & x <= t_90[2]], rev(x[x >= t_90[1] & x <= t_90[2]])),
+        c(y[x >= t_90[1] & x <= t_90[2]], rep(0, length(x[x >= t_90[1] & x <= t_90[2]]))),
+        col = "lightblue", border = NA)
+
+# Shade 95% CI
+t_95 <- qt(c(0.025, 0.975), df = 15)
+polygon(c(x[x >= t_95[1] & x <= t_95[2]], rev(x[x >= t_95[1] & x <= t_95[2]])),
+        c(y[x >= t_95[1] & x <= t_95[2]], rep(0, length(x[x >= t_95[1] & x <= t_95[2]]))),
+        col = rgb(1,0,0,0.3), border = NA)
+
+legend("topright", legend = c("90% CI", "95% CI"), fill = c("lightblue", rgb(1,0,0,0.3)))
+
+```
+
+
+```{r}
+# t-distribution quantiles
+qt(0.95, df = 15)   # 90% CI
+qt(0.975, df = 15)  # 95% CI
+```
+
+#### (e) Tail area for one-sample t-test (t = 2.5, df = 12)
+
+```{r}
+#| echo: false
+x <- seq(-4, 4, 0.01)
+y <- dt(x, df = 12)
+
+# Plot the t-distribution
+plot(x, y, type = "l", lwd = 2, col = "black",
+     main = "Two-tailed p-value (t = 2.5, df = 12)",
+     ylab = "Density", xlab = "t")
+
+# Define t value
+t_val <- 2.5
+
+# Right tail shading
+x_shade_right <- x[x >= t_val]
+y_shade_right <- y[x >= t_val]
+polygon(c(t_val, x_shade_right, max(x)), c(0, y_shade_right, 0),
+        col = "orange", border = NA)
+
+# Left tail shading (symmetric)
+x_shade_left <- x[x <= -t_val]
+y_shade_left <- y[x <= -t_val]
+polygon(c(min(x), x_shade_left, -t_val), c(0, y_shade_left, 0),
+        col = "orange", border = NA)
+
+# Add vertical lines for t = ±2.5
+abline(v = c(-t_val, t_val), col = "brown", lty = 2, lwd = 1.5)
+
+```
+
+
+```{r}
+# Two-tailed p-value
+2 * (1 - pt(2.5, df = 12))
+```
+
+---
+
+### **Task 2 [5 pts]: Statistical Inference**
+
+#### (a) One-sample t-test (μ < 55)
+
+```{r}
+#| echo: false
+sample_data <- c(24.4,47.7,65.6,50.7,51.3,67.2,54.6,37.3,43.1,45.5,
+                 62.2,53.6,54,51.1,44.4,67.9,55.3,0.3,57,25.3)
+# Histogram + mean line
+hist(sample_data, breaks = 10, col = "skyblue", border = "white",
+     main = "One-Sample t-Test: Is Mean < 55?",
+     xlab = "Sample Values")
+abline(v = mean(sample_data), col = "red", lwd = 2)
+abline(v = 55, col = "darkgreen", lwd = 2, lty = 2)
+legend("topright", legend = c("Sample Mean", "Test Value (μ=55)"),
+       col = c("red", "darkgreen"), lty = c(1, 2), bty = "n")
+
+```
+
+
+```{r}
+sample_data <- c(24.4,47.7,65.6,50.7,51.3,67.2,54.6,37.3,43.1,45.5,
+                 62.2,53.6,54,51.1,44.4,67.9,55.3,0.3,57,25.3)
+
+t.test(sample_data, mu = 55, alternative = "less")
+```
+
+#### (b) Two-sample t-test
+
+```{r}
+#| echo: false
+# Combine into data frame
+group_A <- c(68, 72, 75, 70, 69, 71, 73, 68, 74, 67)
+group_B <- c(80, 78, 77, 82, 76, 79, 81, 83, 78, 77)
+group <- factor(c(rep("Group A", length(group_A)), rep("Group B", length(group_B))))
+values <- c(group_A, group_B)
+
+boxplot(values ~ group, col = c("lightblue", "salmon"),
+        main = "Two-Sample t-Test: Group A vs Group B",
+        ylab = "Weight (kg)")
+
+```
+
+
+```{r}
+group_A <- c(68, 72, 75, 70, 69, 71, 73, 68, 74, 67)
+group_B <- c(80, 78, 77, 82, 76, 79, 81, 83, 78, 77)
+
+t.test(group_A, group_B)
+```
+
+#### (c) Chi-square test of independence
+
+```{r}
+#| echo: false
+# Visualize observed counts
+library(ggplot2)
+tabular_data <- matrix(c(50, 30, 40, 60), nrow = 2, byrow = TRUE)
+df <- as.data.frame(as.table(tabular_data))
+colnames(df) <- c("Age", "Drink", "Count")
+
+ggplot(df, aes(x = Drink, y = Age, fill = Count)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = Count), color = "black", size = 5) +
+  scale_fill_gradient(low = "lightyellow", high = "steelblue") +
+  labs(title = "Observed Counts (Chi-square Test)",
+       x = "Drink Preference", y = "Age Group") +
+  theme_minimal()
+
+```
+
+
+```{r}
+tabular_data <- matrix(c(50, 30, 40, 60), nrow = 2, byrow = TRUE)
+rownames(tabular_data) <- c("Below 30", "age 30 and above")
+colnames(tabular_data) <- c("Coffee", "Tea")
+
+chisq.test(tabular_data)
+```
+
+#### (d) Expected counts
+
+```{r}
+#| echo: false
+expected <- chisq.test(tabular_data)$expected
+
+# Optional: visualizing expected counts using same style
+df_exp <- as.data.frame(as.table(expected))
+colnames(df_exp) <- c("Age", "Drink", "Expected")
+
+ggplot(df_exp, aes(x = Drink, y = Age, fill = Expected)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = round(Expected, 1)), color = "black", size = 5) +
+  scale_fill_gradient(low = "lightpink", high = "darkred") +
+  labs(title = "Expected Counts (Chi-square Test)",
+       x = "Drink Preference", y = "Age Group") +
+  theme_minimal()
+
+```
+
+
+```{r}
+chisq.test(tabular_data)$expected
+```
+
+#### (e) Proportion test for fairness of coin
+
+```{r}
+#| echo: false
+# Normal approximation: mean = 50, sd = 5
+x_vals <- seq(30, 70, 0.1)
+y_vals <- dnorm(x_vals, mean = 50, sd = 5)
+
+# Plot the normal curve
+plot(x_vals, y_vals, type = "l", lwd = 2, col = "black",
+     main = "Normal Approximation: Coin Toss (n = 100, p = 0.5)",
+     ylab = "Density", xlab = "Number of Heads")
+
+# Shade area for P(X ≤ 35)
+x_shade <- x_vals[x_vals <= 35]
+y_shade <- dnorm(x_shade, mean = 50, sd = 5)
+polygon(c(min(x_shade), x_shade, max(x_shade)), c(0, y_shade, 0),
+        col = "orange", border = NA)
+
+# Add vertical line at x = 35
+abline(v = 35, col = "red", lty = 2, lwd = 2)
+
+# Annotate
+legend("topright", legend = c("Observed = 35", "P(X ≤ 35)"), 
+       col = c("red", "orange"), lty = c(2, NA), pch = c(NA, 15), bty = "n")
+
+
+```
+
+
+```{r}
+# 35 heads out of 100 tosses
+prop.test(x = 35, n = 100, p = 0.5, alternative = "two.sided")
+```
