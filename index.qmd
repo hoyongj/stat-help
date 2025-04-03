@@ -14,17 +14,27 @@ format: html
 # Plot normal curve
 x <- seq(-5, 7, 0.01)
 y <- dnorm(x, mean = 1, sd = 2)
-plot(x, y, type = "l", lwd = 2, col = "black", main = "Normal Distribution N(1,2)",
+plot(x, y, type = "l", lwd = 2, col = "black",
+     main = "Normal Distribution N(1,2)",
      ylab = "Density", xlab = "X")
 
+# Transparent colors
+blue_trans  <- rgb(0.2, 0.4, 1, alpha = 0.4)  # light blue
+red_trans   <- rgb(1, 0.2, 0.2, alpha = 0.4)  # light red
+
 # Shade P(X ≤ 2.1)
-polygon(c(x[x <= 2.1], 2.1), c(y[x <= 2.1], 0), col = "skyblue", border = NA)
+x1 <- x[x <= 2.1]
+y1 <- y[x <= 2.1]
+polygon(c(x1, max(x1)), c(y1, 0), col = blue_trans, border = NA)
 
 # Shade P(X > 1.8)
-polygon(c(1.8, x[x > 1.8], max(x)), c(0, y[x > 1.8], 0), col = "salmon", border = NA)
+x2 <- x[x > 1.8]
+y2 <- y[x > 1.8]
+polygon(c(min(x2), x2, max(x2)), c(0, y2, 0), col = red_trans, border = NA)
 
+# Legend
 legend("topright", legend = c("P(X ≤ 2.1)", "P(X > 1.8)"),
-       fill = c("skyblue", "salmon"))
+       fill = c(blue_trans, red_trans), border = NA)
 
 ```
 
@@ -120,6 +130,8 @@ legend("topright", legend = c("90% CI", "95% CI"), fill = c("lightblue", rgb(1,0
 qt(0.95, df = 15)   # 90% CI
 qt(0.975, df = 15)  # 95% CI
 ```
+
+note that, t-distribution has wider interval compared to normal-distribution.
 
 #### (e) Tail area for one-sample t-test (t = 2.5, df = 12)
 
@@ -300,3 +312,6 @@ legend("topright", legend = c("Observed = 35", "P(X ≤ 35)"),
 # 35 heads out of 100 tosses
 prop.test(x = 35, n = 100, p = 0.5, alternative = "two.sided")
 ```
+
+p-value = 0.003732
+There is an evidence to say this is unfair.
